@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.sql.Time;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -61,11 +62,11 @@ public class Preprocessor {
     /**
      * Checks that the path exists, is a folder, and is writeable
      * 
-     * @deprecated THIS SHOULD BE DONE ON THE INPUT SIDE
+     * Should probably be on the input side
      * 
      * @param inputPath
      */
-    private void verifyPathIsValid(String inputPath) {
+    public static void verifyPathIsValid(String inputPath) {
         Path checkPath = null;
         try {
             checkPath = Paths.get(inputPath);
@@ -99,7 +100,25 @@ public class Preprocessor {
      * 
      * @return info regarding this process, idk
      */
-    public String[] processString(String inputText) throws IOException {
+    public ArrayList<String[]> processString(String inputText) throws IOException {
+        
+        ArrayList<String[]> alStoreResults = new ArrayList<>();
+        alStoreResults.add(processSmallString(inputText));
+        boolean mostRecentSplit = Boolean.getBoolean(alStoreResults.get(0)[1]);
+        int i = 0;
+        while (mostRecentSplit) {
+            inputText = inputText.substring(Integer.parseInt(alStoreResults.get(i)[2]));
+            i++;
+        }
+    }
+
+    /**
+     * 
+     * @param inputText
+     * 
+     * @return info regarding this process, idk
+     */
+    private String[] processSmallString(String inputText) throws IOException {
         BufferedImage buffImage = null;
         Double mod = 1.;
         if (inRGB) {
@@ -125,7 +144,8 @@ public class Preprocessor {
             }
         }
         String[] returnInfo = new String[3]; //Path, willBeSplit, splitIndex
-        returnInfo[0] = writeMap(buffImage);
+        writeMap(buffImage);
+        returnInfo[0] = outputPath.toString();
         returnInfo[1] = String.valueOf(willBeSplit);
         returnInfo[2] = Integer.toString(splitIndex);
         
@@ -137,7 +157,7 @@ public class Preprocessor {
      * 
      * @param completedBuffer
      */
-    private String writeMap(BufferedImage completedBuffer) throws IOException {
+    private void writeMap(BufferedImage completedBuffer) throws IOException {
         File newImageFile = new File(outputPath.toString() + "\\Image" + filesProcessed + ".png");
         try {
             Files.createDirectories(outputPath.getParent());
@@ -146,7 +166,6 @@ public class Preprocessor {
             throw e;
         }
         filesProcessed++;
-        return newImageFile.getAbsolutePath();
     }
 
 
