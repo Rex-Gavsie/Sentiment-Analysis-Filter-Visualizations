@@ -52,7 +52,7 @@ public class Preprocessor {
             i++;
         }
         this.PROCESSORNAME = "Processor " + i;
-        this.outputPath = Paths.get(outputPath, PROCESSORNAME, "/");
+        this.outputPath = Paths.get(outputPath, PROCESSORNAME, "\\");
         createPreprocessorFolder();
         
     }
@@ -103,22 +103,26 @@ public class Preprocessor {
     public ArrayList<String[]> processString(String inputText) throws IOException {
         
         ArrayList<String[]> alStoreResults = new ArrayList<>();
-        alStoreResults.add(processSmallString(inputText));
-        boolean mostRecentSplit = Boolean.getBoolean(alStoreResults.get(0)[1]);
+        alStoreResults.add(processSmallString(inputText, true));
+        boolean mostRecentSplit = Boolean.parseBoolean(alStoreResults.get(0)[1]);
         int i = 0;
         while (mostRecentSplit) {
             inputText = inputText.substring(Integer.parseInt(alStoreResults.get(i)[2]));
+            alStoreResults.add(processSmallString(inputText, false));
             i++;
+            mostRecentSplit = Boolean.parseBoolean(alStoreResults.get(i)[1]);
         }
+        return alStoreResults;
     }
 
     /**
      * 
      * @param inputText
+     * @param firstTime
      * 
      * @return info regarding this process, idk
      */
-    private String[] processSmallString(String inputText) throws IOException {
+    private String[] processSmallString(String inputText, boolean firstTime) throws IOException {
         BufferedImage buffImage = null;
         Double mod = 1.;
         if (inRGB) {
@@ -130,7 +134,12 @@ public class Preprocessor {
         int index = 0, x = 0, y = 0, splitIndex = 0;
         boolean willBeSplit = false;
         while (index < textArray.length) {
-            buffImage.setRGB(x, y, Heatmap.getColorForChar(textArray[index]).getRGB());
+            try { 
+                buffImage.setRGB(x, y, Heatmap.getColorForChar(textArray[index]).getRGB());
+            } catch (NullPointerException e) {
+                System.out.println("FAILED TO SET RGB.\nINDEX: " + index + " \nChar: " + textArray[index] + "\n Color: " + Heatmap.getColorForChar(textArray[index]));
+                throw e;
+            }
             index++;
             x++;
             if (x == imageSize) {
