@@ -1,18 +1,15 @@
-## Getting Started
+# Goal
+The goal of this project is to be able to look at how a NN processes text in a visual manner by looking at the filters in a convolutional nueral network
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+# Parts:
 
-## Folder Structure
+## The Preprocessor
+The preprocessor will take Strings/Text files as inputs and will convert them into images where the color at any given pixel represents its ASCII table index.
 
-The workspace contains two folders by default, where:
+For the sake of looks/being able to tell apart the 128 colors, I'll add in an ability to convert the char into RGB values instead of grayscale.
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+## The Model
+The Sentiment Analysis itself will be done by a convolutional nueral network. This may not be the greatest way to do it, but as long as it works, it doesn't matter.
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+## The Model Visualizer
+The Model Visualizer will be a program that allows you to access and see the filters of the nueral network. They might not look like anything, but they also might look cool, and either way, it'll be 'art'.
